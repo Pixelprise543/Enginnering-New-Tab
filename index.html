@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+    
+    <!-- External Stylesheet Link -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Embedded CSS Safeguard & Liquid Glass Styles -->
+    <style>
+        /* --- CSS Variables & Theming --- */
+        :root {
+            --bg-color: #FAFAFA;
+            --surface-color: rgba(255, 255, 255, 0.65);
+            --text-primary: #111111;
+            --text-secondary: #71717A;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.8);
+            --glass-shadow: rgba(0, 0, 0, 0.05);
+            --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --accent-color: #2563EB;
+            --accent-hover: #1D4ED8;
+            --grid-color: rgba(0, 0, 0, 0.03);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            --radius-sm: 14px;
+            --radius-md: 18px;
+            --radius-lg: 28px;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0A0A0C;
+            --surface-color: rgba(18, 20, 24, 0.65);
+            --text-primary: #F5F5F5;
+            --text-secondary: #A1A1AA;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.05);
+            --glass-shadow: rgba(0, 0, 0, 0.4);
+            --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.4);
+            --accent-color: #3B82F6;
+            --accent-hover: #60A5FA;
+            --grid-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* --- Base Reset & Typography --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            position: relative;
+        }
+
+        /* Blueprint Grid Background */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 32px 32px;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* --- Liquid Glass Effect --- */
+        .liquid-glass {
+            background: var(--surface-color) !important;
+            box-shadow: 
+                0 6px 12px var(--glass-shadow), 
+                inset 2px 2px 1px 0 var(--glass-highlight), 
+                inset -1px -1px 1px 1px rgba(0, 0, 0, 0.02) !important;
+            border: 1px solid var(--border-color) !important;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .liquid-glass::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            backdrop-filter: blur(8px);
+            filter: url(#glass-distortion);
+            pointer-events: none;
+        }
+
+        .liquid-glass:hover {
+            transform: scale(1.02);
+            box-shadow: 
+                0 12px 24px var(--glass-shadow), 
+                inset 2px 2px 1px 0 var(--glass-highlight), 
+                inset -1px -1px 1px 1px rgba(0, 0, 0, 0.02) !important;
+        }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 24px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Top Section --- */
+        .top-section { text-align: center; position: relative; }
+
+        .weather-widget { 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 0.95rem; 
+            color: var(--text-primary); 
+            cursor: pointer;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+        }
+        .weather-widget i { font-size: 1.25rem; }
+        .weather-city { font-size: 0.8rem; opacity: 0.85; margin-left: 2px; }
+
+        .greeting { font-size: 1.2rem; font-weight: 300; color: var(--text-secondary); margin-bottom: 8px; }
+        .clock { font-size: 4rem; font-weight: 300; letter-spacing: -1px; line-height: 1; margin-bottom: 8px; }
+        .date { font-size: 1rem; color: var(--text-secondary); }
+
+        /* --- Search Bar --- */
+        .search-container { max-width: 720px; margin: 0 auto; width: 100%; position: relative; }
+
+        .search-bar { 
+            width: 100%; 
+            height: 72px; 
+            border-radius: var(--radius-lg); 
+            padding: 0 280px 0 28px; 
+            font-size: 1.15rem; 
+            color: var(--text-primary); 
+            outline: none; 
+        }
+        .search-bar::placeholder { color: var(--text-secondary); }
+
+        .search-engine-selector { 
+            position: absolute; 
+            right: 8px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            display: flex; 
+            gap: 8px; 
+            padding: 6px; 
+            border-radius: 36px; 
+        }
+
+        .engine-btn { 
+            width: 56px; 
+            height: 56px; 
+            border-radius: 50%; 
+            border: none; 
+            background: transparent; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: var(--transition); 
+            opacity: 0.6; 
+        }
+        .engine-btn svg { width: 36px; height: 36px; }
+        .engine-btn:hover, .engine-btn.active { 
+            opacity: 1; 
+            background: var(--surface-color); 
+            box-shadow: 0 2px 10px var(--glass-shadow); 
+        }
+
+        /* --- Main Grid --- */
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 24px; 
+            align-items: start; 
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .weather-widget { position: static; justify-content: center; margin-bottom: 12px; }
+        }
+
+        .card { 
+            border-radius: var(--radius-md); 
+            padding: 24px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 18px; 
+        }
+
+        .card-header, .card h3 { 
+            font-size: 0.88rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-weight: 600; 
+            color: var(--text-primary); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .card-header i { font-size: 1.25rem; }
+
+        ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        a { color: var(--text-primary); text-decoration: none; transition: var(--transition); }
+
+        /* --- Quick Access Grid --- */
+        .quick-access { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+        .shortcut { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 8px; 
+            color: var(--text-secondary); 
+            font-size: 0.8rem; 
+            font-weight: 500;
+        }
+
+        .shortcut .icon-box { 
+            width: 56px; 
+            height: 56px; 
+            border-radius: var(--radius-sm); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.75rem; 
+            color: var(--text-primary); 
+        }
+        .shortcut .icon-box svg { width: 28px; height: 28px; }
+        .shortcut:hover { color: var(--text-primary); }
+
+        /* --- Task Checklist --- */
+        .task-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .task-item { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; }
+        .task-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent-color); }
+        .task-item input[type="text"] { border: none; background: transparent; color: inherit; font-size: inherit; outline: none; width: 100%; }
+
+        /* --- Toolbox Links --- */
+        .toolbox-list { display: flex; flex-direction: column; gap: 10px; }
+        .toolbox-link { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 12px 14px; 
+            border-radius: var(--radius-sm); 
+            color: var(--text-primary); 
+            font-size: 0.95rem; 
+        }
+
+        /* --- Pomodoro & Button Styling --- */
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 20px;
+            color: var(--text-primary);
+            padding: 8px 18px;
+            font-size: 0.88rem;
+        }
+
+        .pomodoro-container { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+
+        .timer-presets {
+            display: flex;
+            gap: 6px;
+            padding: 4px;
+            border-radius: 20px;
+        }
+
+        .preset-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            border-radius: 14px;
+            color: var(--text-primary);
+        }
+
+        .preset-btn.active {
+            background: var(--surface-color);
+            box-shadow: 0 2px 8px var(--glass-shadow);
+        }
+
+        .timer-display { position: relative; width: 130px; height: 130px; border-radius: 50%; background: conic-gradient(var(--accent-color) var(--progress, 100%), var(--border-color) 0); display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+        .timer-inner { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: absolute; }
+
+        .timer-text { 
+            font-size: 2.2rem; 
+            font-weight: 500; 
+            z-index: 1; 
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .timer-controls { display: flex; gap: 12px; justify-content: center; }
+        .btn-primary { background: var(--accent-color); color: white; border: none; }
+        .btn-primary:hover { background: var(--accent-hover); }
+
+        /* --- Notes Area --- */
+        textarea, .notes-area { 
+            width: 100%; 
+            height: 130px; 
+            background: transparent;
+            border: none;
+            padding: 14px; 
+            resize: none; 
+            color: var(--text-primary); 
+            font-size: 0.95rem; 
+            line-height: 1.5; 
+            outline: none; 
+        }
+        textarea::placeholder { color: var(--text-secondary); }
+
+        .quote-widget { text-align: center; font-style: italic; color: var(--text-primary); font-size: 0.95rem; }
+        .quote-author { display: block; margin-top: 8px; font-size: 0.8rem; font-style: normal; font-weight: 500; }
+
+        /* --- Keyboard Shortcuts Info --- */
+        .shortcuts-info { position: fixed; bottom: 24px; right: 24px; font-size: 0.78rem; color: var(--text-secondary); display: flex; gap: 16px; opacity: 0.6; }
+        kbd { background: var(--border-color); border: none; padding: 3px 7px; border-radius: 5px; font-family: inherit; font-weight: 500; color: var(--text-primary); }
+    </style>
+</head>
+<body>
+
+    <!-- SVG Filter for Liquid Glass Distortion -->
+    <svg style="display: none">
+        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+            <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence" />
+            <feComponentTransfer in="turbulence" result="mapped">
+                <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+                <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+                <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+            </feComponentTransfer>
+            <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+            <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lightingColor="white" result="specLight">
+                <fePointLight x="-200" y="-200" z="300" />
+            </feSpecularLighting>
+            <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage" />
+            <feDisplacementMap in="SourceGraphic" in2="softMap" scale="200" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <div class="container">
+        
+        <!-- Header / Clock / Weather -->
+        <header class="top-section">
+            <div class="weather-widget liquid-glass" id="weatherWidget" title="Click to change city or °F/°C">
+                <i class="ph ph-thermometer" id="weatherIcon"></i>
+                <span id="weatherTemp">--°F</span>
+                <span id="weatherCity" class="weather-city"></span>
+            </div>
+            <div class="greeting" id="greeting">Good Morning, Engineer.</div>
+            <div class="clock" id="clock">00:00</div>
+            <div class="date" id="date">Monday, January 1</div>
+        </header>
+
+        <!-- Search Bar with Official Distinct Brand Logos -->
+        <form class="search-container" id="searchForm">
+            <input type="text" class="search-bar liquid-glass" id="searchInput" placeholder="Search the web, CAD docs, or tools..." autocomplete="off">
+            <div class="search-engine-selector liquid-glass">
+                <!-- Google Official 4-Color Mark -->
+                <button type="button" class="engine-btn active" data-engine="google" title="Google">
+                    <svg viewBox="0 0 24 24" width="36" height="36">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                </button>
+                <!-- ChatGPT / Custom User Image -->
+                <button type="button" class="engine-btn" data-engine="chatgpt" title="ChatGPT">
+                    <img src="chatgpt.png" alt="ChatGPT" width="34" height="34" style="object-fit: contain;">
+                </button>
+                <!-- Perplexity Cyan Starburst Mark -->
+                <button type="button" class="engine-btn" data-engine="perplexity" title="Perplexity">
+                    <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#20808D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93"/>
+                    </svg>
+                </button>
+                <!-- Wolfram Alpha Crimson Polyhedra Mark -->
+                <button type="button" class="engine-btn" data-engine="wolfram" title="Wolfram Alpha">
+                    <svg viewBox="0 0 24 24" width="36" height="36" fill="#DD1100">
+                        <path d="M12 1.75l2.25 4.8 5.25-1.35-2 4.9 5.25 1.1-3.95 3.6 3.3 4.15-5.15.75-1.1 5.15-3.85-3.85-3.85 3.85-1.1-5.15-5.15-.75 3.3-4.15-3.95-3.6 5.25-1.1-2-4.9 5.25 1.35L12 1.75z"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
+
+        <!-- Dashboard Grid -->
+        <main class="dashboard-grid">
+            
+            <!-- Column 1: Workspace & Toolbox -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <div class="card liquid-glass">
+                    <div class="card-header"><i class="ph ph-grid-four"></i> Workspace</div>
+                    <div class="quick-access">
+                        <a href="https://chatgpt.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-chat-teardrop-text"></i></div>GPT</a>
+                        <a href="https://github.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-github-logo"></i></div>GitHub</a>
+                        <a href="https://cad.onshape.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-cube"></i></div>Onshape</a>
+                        
+                        <a href="https://solidprofessor.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-nut"></i></div>SolidProfessor</a>
+                        
+                        <a href="https://www.mcmaster.com/" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-wrench"></i></div>McMaster</a>
+                        <a href="https://notion.so" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-notebook"></i></div>Notion</a>
+                        <a href="https://drive.google.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-google-drive-logo"></i></div>Drive</a>
+                        <a href="https://calendar.google.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-calendar"></i></div>Calendar</a>
+                    </div>
+                </div>
+
+                <div class="card liquid-glass">
+                    <div class="card-header"><i class="ph ph-toolbox"></i> Engineering Toolbox</div>
+                    <div class="toolbox-list">
+                        <a href="https://www.engineeringtoolbox.com/" class="toolbox-link liquid-glass">Engineering Toolbox</a>
+                        <a href="https://ocw.mit.edu/search/?d=Mechanical%20Engineering" class="toolbox-link liquid-glass">MIT OpenCourseWare</a>
+                        <a href="https://matweb.com/" class="toolbox-link liquid-glass">Material Properties</a>
+                        <a href="https://www.wolframalpha.com/" class="toolbox-link liquid-glass">Advanced Calculator</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Tasks & Timer -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <div class="card liquid-glass">
+                    <div class="card-header"><i class="ph ph-check-square-offset"></i> Today's Tasks</div>
+                    <ul class="task-list" id="taskList"></ul>
+                </div>
+
+                <div class="card liquid-glass">
+                    <div class="card-header"><i class="ph ph-timer"></i> Focus Timer</div>
+                    <div class="pomodoro-container">
+                        <div class="timer-presets liquid-glass">
+                            <button class="preset-btn" data-time="5">5m</button>
+                            <button class="preset-btn" data-time="15">15m</button>
+                            <button class="preset-btn active" data-time="25">25m</button>
+                            <button class="preset-btn" data-time="50">50m</button>
+                        </div>
+                        
+                        <div class="timer-display" id="timerDisplay">
+                            <div class="timer-inner liquid-glass">
+                                <div class="timer-text" id="timerText" title="Click to set custom minutes">25:00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timer-controls">
+                            <button class="btn btn-primary liquid-glass" id="startTimerBtn"><i class="ph ph-play"></i> Start</button>
+                            <button class="btn liquid-glass" id="resetTimerBtn"><i class="ph ph-arrow-counter-clockwise"></i> Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Scratchpad & Quote -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <div class="card liquid-glass">
+                    <div class="card-header"><i class="ph ph-note-pencil"></i> Scratchpad</div>
+                    <textarea class="notes-area" id="notesArea" placeholder="Jot down formulas or ideas..."></textarea>
+                </div>
+                <div class="card quote-widget liquid-glass">
+                    <span id="quoteText">"The best design is the simplest one that works."</span>
+                    <span class="quote-author" id="quoteAuthor">— Albert Einstein</span>
+                </div>
+            </div>
+
+        </main>
+        
+        <!-- Bottom Shortcut Legends -->
+        <div class="shortcuts-info">
+            <span><kbd>/</kbd> Search</span>
+            <span><kbd>T</kbd> Theme</span>
+            <span><kbd>N</kbd> Note</span>
+            <span><kbd>Space</kbd> Timer</span>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script src="script.js"></script>
+</body>
+</html>

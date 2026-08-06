@@ -12,27 +12,22 @@
     
     <!-- Icons -->
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
-    
-    <!-- External Stylesheet Link -->
-    <link rel="stylesheet" href="styles.css">
 
-    <!-- Embedded CSS Safeguard & Liquid Glass Styles -->
+    <!-- Embedded CSS Safeguard -->
     <style>
         /* --- CSS Variables & Theming --- */
         :root {
             --bg-color: #FAFAFA;
-            --surface-color: rgba(255, 255, 255, 0.65);
+            --surface-color: #FFFFFF;
             --text-primary: #111111;
             --text-secondary: #71717A;
             --border-color: rgba(0, 0, 0, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.8);
-            --glass-shadow: rgba(0, 0, 0, 0.05);
             --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.03);
             --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.06);
             --accent-color: #2563EB;
             --accent-hover: #1D4ED8;
             --grid-color: rgba(0, 0, 0, 0.03);
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            --transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
             --radius-sm: 14px;
             --radius-md: 18px;
             --radius-lg: 28px;
@@ -40,12 +35,10 @@
 
         [data-theme="dark"] {
             --bg-color: #0A0A0C;
-            --surface-color: rgba(18, 20, 24, 0.65);
-            --text-primary: #000000;
+            --surface-color: #121418;
+            --text-primary: #F5F5F5;
             --text-secondary: #A1A1AA;
             --border-color: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.05);
-            --glass-shadow: rgba(0, 0, 0, 0.4);
             --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.2);
             --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.4);
             --accent-color: #3B82F6;
@@ -86,39 +79,6 @@
             pointer-events: none;
         }
 
-        /* --- Liquid Glass Effect --- */
-        .liquid-glass {
-            background: var(--surface-color) !important;
-            box-shadow: 
-                0 6px 12px var(--glass-shadow), 
-                inset 2px 2px 1px 0 var(--glass-highlight), 
-                inset -1px -1px 1px 1px rgba(0, 0, 0, 0.02) !important;
-            border: 1px solid var(--border-color) !important;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .liquid-glass::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            border-radius: inherit;
-            backdrop-filter: blur(8px);
-            filter: url(#glass-distortion);
-            pointer-events: none;
-        }
-
-        .liquid-glass:hover {
-            transform: scale(1.02);
-            box-shadow: 
-                0 12px 24px var(--glass-shadow), 
-                inset 2px 2px 1px 0 var(--glass-highlight), 
-                inset -1px -1px 1px 1px rgba(0, 0, 0, 0.02) !important;
-        }
-
         /* --- Layout --- */
         .container {
             max-width: 1100px;
@@ -147,13 +107,19 @@
             align-items: center; 
             gap: 8px; 
             font-size: 0.95rem; 
-            color: var(--text-primary); 
+            color: var(--text-secondary); 
             cursor: pointer;
             padding: 8px 14px;
             border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+        .weather-widget:hover {
+            background: var(--surface-color);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-subtle);
         }
         .weather-widget i { font-size: 1.25rem; }
-        .weather-city { font-size: 0.8rem; opacity: 0.85; margin-left: 2px; }
+        .weather-city { font-size: 0.8rem; opacity: 0.75; margin-left: 2px; }
 
         .greeting { font-size: 1.2rem; font-weight: 300; color: var(--text-secondary); margin-bottom: 8px; }
         .clock { font-size: 4rem; font-weight: 300; letter-spacing: -1px; line-height: 1; margin-bottom: 8px; }
@@ -166,10 +132,18 @@
             width: 100%; 
             height: 72px; 
             border-radius: var(--radius-lg); 
+            border: 1px solid var(--border-color); 
+            background: var(--surface-color); 
             padding: 0 280px 0 28px; 
             font-size: 1.15rem; 
             color: var(--text-primary); 
+            box-shadow: var(--shadow-subtle); 
             outline: none; 
+            transition: var(--transition); 
+        }
+        .search-bar:focus { 
+            box-shadow: 0 0 0 2px var(--accent-color), var(--shadow-hover); 
+            border-color: transparent; 
         }
         .search-bar::placeholder { color: var(--text-secondary); }
 
@@ -180,8 +154,10 @@
             transform: translateY(-50%); 
             display: flex; 
             gap: 8px; 
+            background: var(--bg-color); 
             padding: 6px; 
             border-radius: 36px; 
+            border: 1px solid var(--border-color); 
         }
 
         .engine-btn { 
@@ -190,18 +166,23 @@
             border-radius: 50%; 
             border: none; 
             background: transparent; 
+            color: var(--text-secondary); 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             transition: var(--transition); 
-            opacity: 0.6; 
+            opacity: 0.75; 
         }
         .engine-btn svg { width: 36px; height: 36px; }
-        .engine-btn:hover, .engine-btn.active { 
+        .engine-btn:hover { 
             opacity: 1; 
             background: var(--surface-color); 
-            box-shadow: 0 2px 10px var(--glass-shadow); 
+        }
+        .engine-btn.active { 
+            opacity: 1; 
+            background: var(--surface-color); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
         }
 
         /* --- Main Grid --- */
@@ -218,19 +199,24 @@
         }
 
         .card { 
+            background: var(--surface-color); 
+            border: 1px solid var(--border-color); 
             border-radius: var(--radius-md); 
             padding: 24px; 
+            box-shadow: var(--shadow-subtle); 
+            transition: var(--transition); 
             display: flex; 
             flex-direction: column; 
             gap: 18px; 
         }
+        .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
 
         .card-header, .card h3 { 
             font-size: 0.88rem; 
             text-transform: uppercase; 
             letter-spacing: 1px; 
             font-weight: 600; 
-            color: var(--text-primary); 
+            color: var(--text-secondary); 
             display: flex; 
             align-items: center; 
             gap: 10px; 
@@ -248,23 +234,36 @@
             flex-direction: column; 
             align-items: center; 
             gap: 8px; 
+            text-decoration: none; 
             color: var(--text-secondary); 
             font-size: 0.8rem; 
             font-weight: 500;
+            transition: var(--transition); 
+            cursor: pointer; 
         }
 
         .shortcut .icon-box { 
             width: 56px; 
             height: 56px; 
             border-radius: var(--radius-sm); 
+            background: var(--bg-color); 
+            border: 1px solid var(--border-color); 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             font-size: 1.75rem; 
+            transition: var(--transition); 
             color: var(--text-primary); 
         }
         .shortcut .icon-box svg { width: 28px; height: 28px; }
         .shortcut:hover { color: var(--text-primary); }
+        .shortcut:hover .icon-box { 
+            background: var(--surface-color); 
+            border-color: var(--accent-color); 
+            color: var(--accent-color); 
+            transform: translateY(-3px); 
+            box-shadow: var(--shadow-hover); 
+        }
 
         /* --- Task Checklist --- */
         .task-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
@@ -280,8 +279,18 @@
             justify-content: space-between; 
             padding: 12px 14px; 
             border-radius: var(--radius-sm); 
+            text-decoration: none; 
             color: var(--text-primary); 
             font-size: 0.95rem; 
+            transition: var(--transition); 
+            background: var(--bg-color); 
+            border: 1px solid var(--border-color); 
+        }
+        .toolbox-link:hover { 
+            background: var(--surface-color); 
+            border-color: var(--accent-color); 
+            padding-left: 18px; 
+            color: var(--accent-color); 
         }
 
         /* --- Pomodoro & Button Styling --- */
@@ -289,18 +298,24 @@
             font-family: inherit;
             cursor: pointer;
             border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
             color: var(--text-primary);
             padding: 8px 18px;
             font-size: 0.88rem;
+            transition: var(--transition);
         }
+        button:hover { background: var(--border-color); }
 
         .pomodoro-container { display: flex; flex-direction: column; align-items: center; gap: 18px; }
 
         .timer-presets {
             display: flex;
             gap: 6px;
+            background: var(--bg-color);
             padding: 4px;
             border-radius: 20px;
+            border: 1px solid var(--border-color);
         }
 
         .preset-btn {
@@ -309,37 +324,48 @@
             padding: 6px 14px;
             font-size: 0.8rem;
             border-radius: 14px;
+            color: var(--text-secondary);
+        }
+
+        .preset-btn:hover {
             color: var(--text-primary);
+            background: transparent;
         }
 
         .preset-btn.active {
             background: var(--surface-color);
-            box-shadow: 0 2px 8px var(--glass-shadow);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
         .timer-display { position: relative; width: 130px; height: 130px; border-radius: 50%; background: conic-gradient(var(--accent-color) var(--progress, 100%), var(--border-color) 0); display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-        .timer-inner { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: absolute; }
+        .timer-inner { width: 120px; height: 120px; background: var(--surface-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: absolute; }
 
         .timer-text { 
-            font-size: 2.2rem; 
-            font-weight: 500; 
+            font-size: 2rem; 
+            font-weight: 300; 
             z-index: 1; 
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 8px;
             transition: var(--transition);
         }
+        .timer-text:hover {
+            background: var(--bg-color);
+            color: var(--accent-color);
+        }
 
         .timer-controls { display: flex; gap: 12px; justify-content: center; }
-        .btn-primary { background: var(--accent-color); color: rgb(3, 3, 3); border: none; }
+        .btn-primary { background: var(--accent-color); color: white; border: none; }
         .btn-primary:hover { background: var(--accent-hover); }
 
         /* --- Notes Area --- */
         textarea, .notes-area { 
             width: 100%; 
             height: 130px; 
-            background: transparent;
-            border: none;
+            background: var(--bg-color); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius-sm); 
             padding: 14px; 
             resize: none; 
             color: var(--text-primary); 
@@ -347,41 +373,51 @@
             line-height: 1.5; 
             outline: none; 
         }
-        textarea::placeholder { color: var(--text-secondary); }
+        textarea:focus, .notes-area:focus { border-color: var(--accent-color); }
 
-        .quote-widget { text-align: center; font-style: italic; color: var(--text-primary); font-size: 0.95rem; }
+        .quote-widget { text-align: center; font-style: italic; color: var(--text-secondary); font-size: 0.95rem; }
         .quote-author { display: block; margin-top: 8px; font-size: 0.8rem; font-style: normal; font-weight: 500; }
 
         /* --- Keyboard Shortcuts Info --- */
         .shortcuts-info { position: fixed; bottom: 24px; right: 24px; font-size: 0.78rem; color: var(--text-secondary); display: flex; gap: 16px; opacity: 0.6; }
-        kbd { background: var(--border-color); border: none; padding: 3px 7px; border-radius: 5px; font-family: inherit; font-weight: 500; color: var(--text-primary); }
+        kbd { background: var(--border-color); padding: 3px 7px; border-radius: 5px; font-family: inherit; font-weight: 500; }
+
+        /* --- Modal Styles --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100;
+            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 24px; width: 100%; max-width: 500px;
+            box-shadow: var(--shadow-hover); max-height: 80vh; overflow-y: auto; color: var(--text-primary);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .modal-header h3 { margin: 0; font-size: 1.1rem; }
+        .link-edit-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .link-edit-row input { 
+            flex: 1; padding: 10px 12px; border-radius: var(--radius-sm); 
+            border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); outline: none;
+        }
+        .icon-input { max-width: 120px; }
+        .remove-link-btn { background: #ef4444; color: white; padding: 10px; border-radius: var(--radius-sm); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;}
+        .remove-link-btn:hover { background: #dc2626; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; }
+        .edit-btn { cursor: pointer; opacity: 0.5; transition: opacity 0.2s; border: none; background: transparent; color: var(--text-primary); font-size: 1.25rem; display: flex; }
+        .edit-btn:hover { opacity: 1; color: var(--accent-color); }
+        .card-header-flex { display: flex; justify-content: space-between; width: 100%; align-items: center; }
     </style>
 </head>
 <body>
 
-    <!-- SVG Filter for Liquid Glass Distortion -->
-    <svg style="display: none">
-        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
-            <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence" />
-            <feComponentTransfer in="turbulence" result="mapped">
-                <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
-                <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
-                <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
-            </feComponentTransfer>
-            <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
-            <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lightingColor="white" result="specLight">
-                <fePointLight x="-200" y="-200" z="300" />
-            </feSpecularLighting>
-            <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage" />
-            <feDisplacementMap in="SourceGraphic" in2="softMap" scale="200" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-    </svg>
+    <!-- Your App Mounting Point -->
+    <div id="app"></div>
 
     <div class="container">
         
         <!-- Header / Clock / Weather -->
         <header class="top-section">
-            <div class="weather-widget liquid-glass" id="weatherWidget" title="Click to change city or °F/°C">
+            <div class="weather-widget" id="weatherWidget" title="Click to change city or °F/°C">
                 <i class="ph ph-thermometer" id="weatherIcon"></i>
                 <span id="weatherTemp">--°F</span>
                 <span id="weatherCity" class="weather-city"></span>
@@ -393,8 +429,8 @@
 
         <!-- Search Bar with Official Distinct Brand Logos -->
         <form class="search-container" id="searchForm">
-            <input type="text" class="search-bar liquid-glass" id="searchInput" placeholder="Search the web, CAD docs, or tools..." autocomplete="off">
-            <div class="search-engine-selector liquid-glass">
+            <input type="text" class="search-bar" id="searchInput" placeholder="Search the web, CAD docs, or tools..." autocomplete="off">
+            <div class="search-engine-selector">
                 <!-- Google Official 4-Color Mark -->
                 <button type="button" class="engine-btn active" data-engine="google" title="Google">
                     <svg viewBox="0 0 24 24" width="36" height="36">
@@ -428,59 +464,53 @@
             
             <!-- Column 1: Workspace & Toolbox -->
             <div style="display: flex; flex-direction: column; gap: 24px;">
-                <div class="card liquid-glass">
-                    <div class="card-header"><i class="ph ph-grid-four"></i> Workspace</div>
-                    <div class="quick-access">
-                        <a href="https://chatgpt.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-chat-teardrop-text"></i></div>GPT</a>
-                        <a href="https://github.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-github-logo"></i></div>GitHub</a>
-                        <a href="https://cad.onshape.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-cube"></i></div>Onshape</a>
-                        
-                        <a href="https://solidprofessor.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-nut"></i></div>SolidProfessor</a>
-                        
-                        <a href="https://www.mcmaster.com/" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-wrench"></i></div>McMaster</a>
-                        <a href="https://notion.so" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-notebook"></i></div>Notion</a>
-                        <a href="https://drive.google.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-google-drive-logo"></i></div>Drive</a>
-                        <a href="https://calendar.google.com" class="shortcut"><div class="icon-box liquid-glass"><i class="ph ph-calendar"></i></div>Calendar</a>
+                <div class="card">
+                    <div class="card-header card-header-flex">
+                        <span style="display:flex; align-items:center; gap:10px;"><i class="ph ph-grid-four"></i> Workspace</span>
+                        <button class="edit-btn" onclick="window.openLinkModal('workspace')" title="Edit Workspace"><i class="ph ph-pencil-simple"></i></button>
+                    </div>
+                    <div class="quick-access" id="workspaceGrid">
+                        <!-- Links generated by JS -->
                     </div>
                 </div>
 
-                <div class="card liquid-glass">
-                    <div class="card-header"><i class="ph ph-toolbox"></i> Engineering Toolbox</div>
-                    <div class="toolbox-list">
-                        <a href="https://www.engineeringtoolbox.com/" class="toolbox-link liquid-glass">Engineering Toolbox</a>
-                        <a href="https://ocw.mit.edu/search/?d=Mechanical%20Engineering" class="toolbox-link liquid-glass">MIT OpenCourseWare</a>
-                        <a href="https://matweb.com/" class="toolbox-link liquid-glass">Material Properties</a>
-                        <a href="https://www.wolframalpha.com/" class="toolbox-link liquid-glass">Advanced Calculator</a>
+                <div class="card">
+                    <div class="card-header card-header-flex">
+                        <span style="display:flex; align-items:center; gap:10px;"><i class="ph ph-toolbox"></i> Engineering Toolbox</span>
+                        <button class="edit-btn" onclick="window.openLinkModal('toolbox')" title="Edit Toolbox"><i class="ph ph-pencil-simple"></i></button>
+                    </div>
+                    <div class="toolbox-list" id="toolboxList">
+                        <!-- Links generated by JS -->
                     </div>
                 </div>
             </div>
 
             <!-- Column 2: Tasks & Timer -->
             <div style="display: flex; flex-direction: column; gap: 24px;">
-                <div class="card liquid-glass">
+                <div class="card">
                     <div class="card-header"><i class="ph ph-check-square-offset"></i> Today's Tasks</div>
                     <ul class="task-list" id="taskList"></ul>
                 </div>
 
-                <div class="card liquid-glass">
+                <div class="card">
                     <div class="card-header"><i class="ph ph-timer"></i> Focus Timer</div>
                     <div class="pomodoro-container">
-                        <div class="timer-presets liquid-glass">
-                            <button class="preset-btn" data-time="5">5m</button>
+                        <div class="timer-presets">
                             <button class="preset-btn" data-time="15">15m</button>
                             <button class="preset-btn active" data-time="25">25m</button>
                             <button class="preset-btn" data-time="50">50m</button>
+                            <button class="preset-btn" data-time="5">5m</button>
                         </div>
                         
                         <div class="timer-display" id="timerDisplay">
-                            <div class="timer-inner liquid-glass">
+                            <div class="timer-inner">
                                 <div class="timer-text" id="timerText" title="Click to set custom minutes">25:00</div>
                             </div>
                         </div>
                         
                         <div class="timer-controls">
-                            <button class="btn btn-primary liquid-glass" id="startTimerBtn"><i class="ph ph-play"></i> Start</button>
-                            <button class="btn liquid-glass" id="resetTimerBtn"><i class="ph ph-arrow-counter-clockwise"></i> Reset</button>
+                            <button class="btn btn-primary" id="startTimerBtn"><i class="ph ph-play"></i> Start</button>
+                            <button class="btn" id="resetTimerBtn"><i class="ph ph-arrow-counter-clockwise"></i> Reset</button>
                         </div>
                     </div>
                 </div>
@@ -488,11 +518,11 @@
 
             <!-- Column 3: Scratchpad & Quote -->
             <div style="display: flex; flex-direction: column; gap: 24px;">
-                <div class="card liquid-glass">
+                <div class="card">
                     <div class="card-header"><i class="ph ph-note-pencil"></i> Scratchpad</div>
                     <textarea class="notes-area" id="notesArea" placeholder="Jot down formulas or ideas..."></textarea>
                 </div>
-                <div class="card quote-widget liquid-glass">
+                <div class="card quote-widget">
                     <span id="quoteText">"The best design is the simplest one that works."</span>
                     <span class="quote-author" id="quoteAuthor">— Albert Einstein</span>
                 </div>
@@ -509,7 +539,640 @@
         </div>
     </div>
 
-    <!-- Script Logic -->
-    <script src="script.js"></script>
+    <!-- Link Editor Modal -->
+    <div id="linkModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Edit Links</h3>
+                <button class="edit-btn" onclick="window.closeLinkModal()"><i class="ph ph-x"></i></button>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px;">Tip: For icons, use Phosphor Icon names (e.g., ph-cube, ph-wrench).</p>
+            <div id="linkEditList"></div>
+            <button class="btn" style="margin-top: 12px; width: 100%; border: 1px dashed var(--border-color); background: transparent;" onclick="window.addLinkRow()">+ Add New Link</button>
+            <div class="modal-actions">
+                <button class="btn" onclick="window.closeLinkModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="window.saveLinks()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inline Script Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initClock();
+            initWeather();
+            initSearch();
+            initTasks();
+            initPomodoro();
+            initNotes();
+            initQuote();
+            initShortcuts();
+            initLinks();
+        });
+
+        // --- Clock & Greeting ---
+        function initClock() {
+            const clockEl = document.getElementById('clock');
+            const dateEl = document.getElementById('date');
+            const greetingEl = document.getElementById('greeting');
+
+            function updateTime() {
+                const now = new Date();
+                
+                let hours = now.getHours();
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                hours = hours % 12 || 12; 
+                
+                if (clockEl) {
+                    clockEl.textContent = `${hours}:${minutes}`;
+                }
+
+                const options = { weekday: 'long', month: 'long', day: 'numeric' };
+                if (dateEl) {
+                    dateEl.textContent = now.toLocaleDateString('en-US', options);
+                }
+
+                const currentHour = now.getHours();
+                let greeting = 'Good Evening';
+                if (currentHour >= 5 && currentHour < 12) greeting = 'Good Morning';
+                else if (currentHour >= 12 && currentHour < 18) greeting = 'Good Afternoon';
+                
+                if (greetingEl) {
+                    greetingEl.textContent = `${greeting}, Engineer.`;
+                }
+            }
+            
+            updateTime();
+            setInterval(updateTime, 1000);
+        }
+
+        // --- Weather ---
+        let weatherUnit = localStorage.getItem('weather_unit') || 'fahrenheit';
+        let weatherCity = localStorage.getItem('weather_city') || '';
+
+        function initWeather() {
+            const weatherWidget = document.getElementById('weatherWidget');
+            if (!weatherWidget) return;
+            
+            weatherWidget.addEventListener('click', () => {
+                const choice = prompt(
+                    `Weather Settings:\nCurrent City: ${weatherCity || 'Auto-detect'}\nCurrent Unit: °${weatherUnit === 'fahrenheit' ? 'F' : 'C'}\n\nType a city name to change location, OR type 'unit' to toggle °F/°C, or leave blank to reset to auto location:`, 
+                    weatherCity
+                );
+
+                if (choice !== null) {
+                    const trimmed = choice.trim();
+                    if (trimmed.toLowerCase() === 'unit') {
+                        weatherUnit = weatherUnit === 'fahrenheit' ? 'celsius' : 'fahrenheit';
+                        localStorage.setItem('weather_unit', weatherUnit);
+                    } else if (trimmed === '') {
+                        weatherCity = '';
+                        localStorage.removeItem('weather_city');
+                    } else {
+                        weatherCity = trimmed;
+                        localStorage.setItem('weather_city', weatherCity);
+                    }
+                    fetchWeatherData();
+                }
+            });
+
+            fetchWeatherData();
+        }
+
+        async function fetchWeatherData() {
+            const tempEl = document.getElementById('weatherTemp');
+            const cityEl = document.getElementById('weatherCity');
+            const iconEl = document.getElementById('weatherIcon');
+            
+            if (tempEl) tempEl.textContent = '...';
+            const unitSymbol = weatherUnit === 'fahrenheit' ? '°F' : '°C';
+
+            try {
+                let lat, lon, locationName = '';
+
+                if (weatherCity) {
+                    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(weatherCity)}&count=1&language=en&format=json`);
+                    const geoData = await geoRes.json();
+                    if (geoData.results && geoData.results.length > 0) {
+                        lat = geoData.results[0].latitude;
+                        lon = geoData.results[0].longitude;
+                        locationName = geoData.results[0].name;
+                    } else {
+                        if (tempEl) tempEl.textContent = 'City not found';
+                        return;
+                    }
+                } else {
+                    const pos = await new Promise((resolve) => {
+                        if ("geolocation" in navigator) {
+                            navigator.geolocation.getCurrentPosition(
+                                resolve, 
+                                () => resolve(null), 
+                                { timeout: 3000 }
+                            );
+                        } else {
+                            resolve(null);
+                        }
+                    });
+
+                    if (pos && pos.coords) {
+                        lat = pos.coords.latitude;
+                        lon = pos.coords.longitude;
+                    } else {
+                        const ipRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
+                        const ipData = await ipRes.json();
+                        lat = parseFloat(ipData.latitude);
+                        lon = parseFloat(ipData.longitude);
+                        locationName = ipData.city || '';
+                    }
+                }
+
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=${weatherUnit}`);
+                const weatherData = await weatherRes.json();
+
+                if (weatherData.current_weather) {
+                    const temp = Math.round(weatherData.current_weather.temperature);
+                    
+                    if (tempEl) tempEl.textContent = `${temp}${unitSymbol}`;
+                    if (cityEl) cityEl.textContent = locationName ? `• ${locationName}` : '';
+                    
+                    if (iconEl) {
+                        const code = weatherData.current_weather.weathercode;
+                        if (code === 0) iconEl.className = 'ph ph-sun';
+                        else if (code >= 1 && code <= 3) iconEl.className = 'ph ph-cloud-sun';
+                        else if (code >= 45 && code <= 48) iconEl.className = 'ph ph-cloud-fog';
+                        else if (code >= 51 && code <= 67) iconEl.className = 'ph ph-cloud-rain';
+                        else if (code >= 71 && code <= 77) iconEl.className = 'ph ph-snowflake';
+                        else if (code >= 80 && code <= 82) iconEl.className = 'ph ph-cloud-showers';
+                        else if (code >= 95) iconEl.className = 'ph ph-lightning';
+                        else iconEl.className = 'ph ph-thermometer';
+                    }
+                }
+            } catch (err) {
+                if (tempEl) tempEl.textContent = 'Weather N/A';
+                if (cityEl) cityEl.textContent = '';
+            }
+        }
+
+        // --- Search Engine Logic ---
+        let currentEngine = 'google';
+        const engines = {
+            google: 'https://www.google.com/search?q=',
+            chatgpt: 'https://chatgpt.com/?q=',
+            perplexity: 'https://www.perplexity.ai/search?q=',
+            wolfram: 'https://www.wolframalpha.com/input/?i='
+        };
+
+        function initSearch() {
+            const form = document.getElementById('searchForm');
+            const input = document.getElementById('searchInput');
+            const btns = document.querySelectorAll('.engine-btn');
+
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentEngine = btn.dataset.engine;
+                    if (input) input.focus();
+                });
+            });
+
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (input) {
+                        const query = input.value.trim();
+                        if (query) {
+                            window.location.href = engines[currentEngine] + encodeURIComponent(query);
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Task List (With Safe Parsing) ---
+        let tasks = [];
+        try {
+            const savedTasks = localStorage.getItem('tasks');
+            if (savedTasks) {
+                tasks = JSON.parse(savedTasks);
+            }
+            if (!Array.isArray(tasks)) throw new Error("Tasks corrupted");
+        } catch (e) {
+            tasks = [
+                { id: 1, text: 'Review Thermodynamics notes', done: false },
+                { id: 2, text: 'Finish SolidWorks assembly', done: false },
+                { id: 3, text: '', done: false } 
+            ];
+        }
+
+        function initTasks() {
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('taskList');
+            if (!list) return;
+            list.innerHTML = '';
+            
+            if (tasks.length === 0 || tasks[tasks.length - 1].text.trim() !== '') {
+                tasks.push({ id: Date.now(), text: '', done: false });
+            }
+
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = task.done;
+                checkbox.addEventListener('change', () => {
+                    task.done = checkbox.checked;
+                    saveTasks();
+                });
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = task.text;
+                input.placeholder = index === tasks.length - 1 ? 'Add new task...' : '';
+                
+                input.addEventListener('input', (e) => {
+                    task.text = e.target.value;
+                    saveTasks();
+                });
+                
+                input.addEventListener('blur', () => {
+                    tasks = tasks.filter((t, i) => t.text.trim() !== '' || i === tasks.length - 1);
+                    saveTasks();
+                    renderTasks();
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (task.text.trim() !== '' && index === tasks.length - 1) {
+                             tasks.push({ id: Date.now(), text: '', done: false });
+                             saveTasks();
+                             renderTasks();
+                             setTimeout(() => {
+                                 const inputs = list.querySelectorAll('input[type="text"]');
+                                 if (inputs.length > 0) inputs[inputs.length - 1].focus();
+                             }, 10);
+                        }
+                    }
+                });
+
+                li.appendChild(checkbox);
+                li.appendChild(input);
+                list.appendChild(li);
+            });
+        }
+
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // --- Customizable Focus Timer ---
+        let timerInterval;
+        let customMinutes = parseInt(localStorage.getItem('timer_minutes')) || 25;
+        if (isNaN(customMinutes)) customMinutes = 25; 
+
+        let totalTime = customMinutes * 60;
+        let timeLeft = totalTime;
+        let isRunning = false;
+
+        function initPomodoro() {
+            const startBtn = document.getElementById('startTimerBtn');
+            const resetBtn = document.getElementById('resetTimerBtn');
+            const timerText = document.getElementById('timerText');
+            const presetBtns = document.querySelectorAll('.preset-btn');
+
+            presetBtns.forEach(btn => {
+                const mins = parseInt(btn.dataset.time);
+                if (mins === customMinutes) {
+                    presetBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                }
+
+                btn.addEventListener('click', () => {
+                    presetBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    setTimerDuration(mins);
+                });
+            });
+
+            if (timerText) {
+                timerText.addEventListener('click', () => {
+                    if (isRunning) return;
+                    const userMins = prompt('Enter timer duration in minutes (1 - 180):', customMinutes);
+                    if (userMins !== null) {
+                        const parsed = parseInt(userMins.trim());
+                        if (!isNaN(parsed) && parsed > 0 && parsed <= 180) {
+                            presetBtns.forEach(b => {
+                                b.classList.toggle('active', parseInt(b.dataset.time) === parsed);
+                            });
+                            setTimerDuration(parsed);
+                        }
+                    }
+                });
+            }
+
+            updateTimerDisplay();
+
+            if (startBtn) startBtn.addEventListener('click', toggleTimer);
+            if (resetBtn) resetBtn.addEventListener('click', resetTimer);
+        }
+
+        function setTimerDuration(mins) {
+            if (isRunning) toggleTimer();
+            customMinutes = mins;
+            localStorage.setItem('timer_minutes', customMinutes);
+            totalTime = customMinutes * 60;
+            timeLeft = totalTime;
+            updateTimerDisplay();
+        }
+
+        function toggleTimer() {
+            const startBtn = document.getElementById('startTimerBtn');
+            if (isRunning) {
+                clearInterval(timerInterval);
+                if (startBtn) {
+                    startBtn.innerHTML = '<i class="ph ph-play"></i> Start';
+                    startBtn.classList.add('btn-primary');
+                }
+            } else {
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        if (startBtn) {
+                            startBtn.innerHTML = '<i class="ph ph-play"></i> Start';
+                            startBtn.classList.add('btn-primary');
+                        }
+                    }
+                }, 1000);
+                if (startBtn) {
+                    startBtn.innerHTML = '<i class="ph ph-pause"></i> Pause';
+                    startBtn.classList.remove('btn-primary');
+                }
+            }
+            isRunning = !isRunning;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = totalTime;
+            updateTimerDisplay();
+            const startBtn = document.getElementById('startTimerBtn');
+            if (startBtn) {
+                startBtn.innerHTML = '<i class="ph ph-play"></i> Start';
+                startBtn.classList.add('btn-primary');
+            }
+        }
+
+        function updateTimerDisplay() {
+            const text = document.getElementById('timerText');
+            const display = document.getElementById('timerDisplay');
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            if (text) {
+                text.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+            
+            const percentage = totalTime > 0 ? (timeLeft / totalTime) * 100 : 0;
+            if (display) {
+                display.style.setProperty('--progress', `${percentage}%`);
+            }
+        }
+
+        // --- Notes Autosave ---
+        function initNotes() {
+            const notesArea = document.getElementById('notesArea');
+            if (!notesArea) return;
+            
+            notesArea.value = localStorage.getItem('engineering_notes') || '';
+            
+            notesArea.addEventListener('input', (e) => {
+                localStorage.setItem('engineering_notes', e.target.value);
+            });
+        }
+
+        // --- Rotating Quotes ---
+        function initQuote() {
+            const quotes = [
+                { text: "Engineering is the closest thing to magic that exists in the world.", author: "Elon Musk" },
+                { text: "The best design is the simplest one that works.", author: "Albert Einstein" },
+                { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci" },
+                { text: "Strive for perfection in everything you do. Take the best that exists and make it better.", author: "Sir Henry Royce" }
+            ];
+            
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+            const selectedQuote = quotes[dayOfYear % quotes.length];
+            
+            const quoteText = document.getElementById('quoteText');
+            const quoteAuthor = document.getElementById('quoteAuthor');
+            
+            if (quoteText) {
+                quoteText.textContent = `"${selectedQuote.text}"`;
+            }
+            if (quoteAuthor) {
+                quoteAuthor.textContent = `— ${selectedQuote.author}`;
+            }
+        }
+
+        // --- Global Keyboard Shortcuts ---
+        function initShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                const activeNode = document.activeElement;
+                const isInputFocused = activeNode && ['INPUT', 'TEXTAREA'].includes(activeNode.tagName);
+                
+                if (e.key === '/' && !isInputFocused) {
+                    e.preventDefault();
+                    const input = document.getElementById('searchInput');
+                    if (input) input.focus();
+                }
+                if (e.key.toLowerCase() === 'n' && !isInputFocused) {
+                    e.preventDefault();
+                    const area = document.getElementById('notesArea');
+                    if (area) area.focus();
+                }
+                if (e.key === ' ' && !isInputFocused) {
+                    e.preventDefault();
+                    toggleTimer();
+                }
+            });
+        }
+
+        // --- Link Management ---
+        const defaultWorkspace = [
+            { name: 'GPT', url: 'https://chatgpt.com', icon: 'ph-chat-teardrop-text' },
+            { name: 'GitHub', url: 'https://github.com', icon: 'ph-github-logo' },
+            { name: 'Onshape', url: 'https://cad.onshape.com', icon: 'ph-cube' },
+            { name: 'SolidProfessor', url: 'https://solidprofessor.com', icon: 'ph-nut' },
+            { name: 'McMaster', url: 'https://www.mcmaster.com/', icon: 'ph-wrench' },
+            { name: 'Notion', url: 'https://notion.so', icon: 'ph-notebook' },
+            { name: 'Drive', url: 'https://drive.google.com', icon: 'ph-google-drive-logo' },
+            { name: 'Calendar', url: 'https://calendar.google.com', icon: 'ph-calendar' }
+        ];
+
+        const defaultToolbox = [
+            { name: 'Engineering Toolbox', url: 'https://www.engineeringtoolbox.com/' },
+            { name: 'MIT OpenCourseWare', url: 'https://ocw.mit.edu/search/?d=Mechanical%20Engineering' },
+            { name: 'Material Properties', url: 'https://matweb.com/' },
+            { name: 'Advanced Calculator', url: 'https://www.wolframalpha.com/' }
+        ];
+
+        let workspaceLinks = [];
+        let toolboxLinks = [];
+        let currentEditType = null;
+
+        function initLinks() {
+            try {
+                const savedWs = localStorage.getItem('workspace_links');
+                workspaceLinks = savedWs ? JSON.parse(savedWs) : defaultWorkspace;
+                if (!Array.isArray(workspaceLinks)) throw new Error();
+            } catch(e) { workspaceLinks = defaultWorkspace; }
+            
+            try {
+                const savedTb = localStorage.getItem('toolbox_links');
+                toolboxLinks = savedTb ? JSON.parse(savedTb) : defaultToolbox;
+                if (!Array.isArray(toolboxLinks)) throw new Error();
+            } catch(e) { toolboxLinks = defaultToolbox; }
+
+            renderWorkspace();
+            renderToolbox();
+        }
+
+        function renderWorkspace() {
+            const grid = document.getElementById('workspaceGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            workspaceLinks.forEach(link => {
+                const a = document.createElement('a');
+                a.href = link.url;
+                a.className = 'shortcut';
+                a.innerHTML = `<div class="icon-box"><i class="ph ${link.icon}"></i></div>${link.name}`;
+                grid.appendChild(a);
+            });
+        }
+
+        function renderToolbox() {
+            const list = document.getElementById('toolboxList');
+            if (!list) return;
+            list.innerHTML = '';
+            toolboxLinks.forEach(link => {
+                const a = document.createElement('a');
+                a.href = link.url;
+                a.className = 'toolbox-link';
+                a.textContent = link.name;
+                list.appendChild(a);
+            });
+        }
+
+        // Modal UI Logic (attached to window for inline onclick handlers)
+        window.openLinkModal = function(type) {
+            currentEditType = type;
+            const modal = document.getElementById('linkModal');
+            const title = document.getElementById('modalTitle');
+            const listContainer = document.getElementById('linkEditList');
+            
+            title.textContent = type === 'workspace' ? 'Edit Workspace' : 'Edit Toolbox';
+            listContainer.innerHTML = '';
+            
+            const links = type === 'workspace' ? workspaceLinks : toolboxLinks;
+            links.forEach(link => window.addLinkRow(link.name, link.url, link.icon));
+            
+            modal.style.display = 'flex';
+        };
+
+        window.closeLinkModal = function() {
+            const modal = document.getElementById('linkModal');
+            if (modal) modal.style.display = 'none';
+            currentEditType = null;
+        };
+
+        window.addLinkRow = function(name = '', url = '', icon = 'ph-link') {
+            const listContainer = document.getElementById('linkEditList');
+            const row = document.createElement('div');
+            row.className = 'link-edit-row';
+            
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.placeholder = 'Name';
+            nameInput.value = name;
+            nameInput.className = 'edit-name';
+            
+            const urlInput = document.createElement('input');
+            urlInput.type = 'text';
+            urlInput.placeholder = 'URL (https://...)';
+            urlInput.value = url;
+            urlInput.className = 'edit-url';
+
+            row.appendChild(nameInput);
+            row.appendChild(urlInput);
+
+            if (currentEditType === 'workspace') {
+                const iconInput = document.createElement('input');
+                iconInput.type = 'text';
+                iconInput.placeholder = 'Icon (ph-cube)';
+                iconInput.value = icon.replace('ph ', ''); 
+                if (!iconInput.value.startsWith('ph-')) iconInput.value = `ph-${iconInput.value}`;
+                if (iconInput.value === 'ph-') iconInput.value = 'ph-link'; // Default fallback
+                iconInput.className = 'edit-icon icon-input';
+                row.appendChild(iconInput);
+            }
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-link-btn';
+            removeBtn.innerHTML = '<i class="ph ph-trash"></i>';
+            removeBtn.title = "Remove Link";
+            removeBtn.onclick = () => row.remove();
+            
+            row.appendChild(removeBtn);
+            listContainer.appendChild(row);
+        };
+
+        window.saveLinks = function() {
+            const rows = document.querySelectorAll('.link-edit-row');
+            const newLinks = [];
+            
+            rows.forEach(row => {
+                const name = row.querySelector('.edit-name').value.trim();
+                let url = row.querySelector('.edit-url').value.trim();
+                
+                // Ensure valid URL format
+                if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+
+                if (name && url) {
+                    if (currentEditType === 'workspace') {
+                        let icon = row.querySelector('.edit-icon').value.trim();
+                        if (!icon.startsWith('ph-')) icon = `ph-${icon}`;
+                        newLinks.push({ name, url, icon });
+                    } else {
+                        newLinks.push({ name, url });
+                    }
+                }
+            });
+
+            if (currentEditType === 'workspace') {
+                workspaceLinks = newLinks;
+                localStorage.setItem('workspace_links', JSON.stringify(workspaceLinks));
+                renderWorkspace();
+            } else {
+                toolboxLinks = newLinks;
+                localStorage.setItem('toolbox_links', JSON.stringify(toolboxLinks));
+                renderToolbox();
+            }
+            
+            window.closeLinkModal();
+        };
+    </script>
 </body>
 </html>

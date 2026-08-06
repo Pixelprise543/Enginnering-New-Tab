@@ -2,6 +2,15 @@
 
 I got super tired of the messy default Chrome new tab page distracting me, so I built this clean dashboard for my engineering classes and coding projects. It puts all the sites and tools I actually use right in front of me so I can just get to work!
 
+🌐 Try it Live!
+        |
+        v
+ https://pixelprise543.github.io/Enginnering-New-Tab/ 
+ 
+ I actually deployed this whole project on GitHub Pages too! That means you can check out the dashboard and see how it works as a normal website without even installing the extension first.
+
+👉 Click here to see the live version!
+
 ✨ What It Does
 
 🔍 Quick Search: Easily switch between Google, ChatGPT, Perplexity, and Wolfram Alpha right from the main search bar using the actual brand logos.
@@ -31,6 +40,8 @@ Coding: Vanilla JavaScript.
 Saving Data: Uses your browser's localStorage so you don't even need an account or database to save your notes.
 
 APIs: The Open-Meteo API grabs the live weather based on where you are.
+
+Hosting: Deployed live on the web using GitHub Pages!
 
 🚀 How to Install It
 
@@ -74,4 +85,4 @@ Starts or pauses the study timer
 
 🧠 Why I Made This
 
-Since I'm a student taking engineering and maker classes, I found myself clicking the same 5 websites every single day. The normal new tab page was basically useless to me. I wanted to make something that actually helped me get my homework and CAD projects done faster, while also teaching myself how to build real Chrome extensions, save local data, and code CSS grids!
+Since I'm a student taking engineering and maker classes, I found myself clicking the same 5 websites every single day. The normal new tab page was basically useless to me. I wanted to make something that actually helped me get my homework and CAD projects done faster, while also teaching myself how to build real Chrome extensions, save local data, code CSS grids, and deploy to GitHub!
